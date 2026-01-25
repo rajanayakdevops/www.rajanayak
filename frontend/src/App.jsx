@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
@@ -50,7 +50,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <BrowserRouter basename='/'>
       <div className="App">
         <Navbar />
         <Routes>
@@ -59,7 +59,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

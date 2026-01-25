@@ -16,7 +16,7 @@ app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:5173',
-    'https://your-frontend-url.onrender.com'
+    'https://www-rajanayak-ui.onrender.com'
   ],
   credentials: true
 }));

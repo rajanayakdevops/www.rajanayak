@@ -1,20 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-  --primary: #00d4ff;
-  --secondary: #ff6b6b;
-  --accent: #4ecdc4;
-  --purple: #8b5cf6;
-  --pink: #ec4899;
-  --dark: #0a0a0a;
-  --dark-light: #1a1a1a;
-  --dark-lighter: #2a2a2a;
-  --text: #ffffff;
-  --text-muted: #a0a0a0;
-  --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  --gradient-4: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  /* PRIMARY THEME - Bright Professional */
+  --primary: #6366F1;           /* Indigo */
+  --secondary: #22C55E;         /* Bright Green */
+  --accent: #F59E0B;            /* Amber */
+  --purple: #9333EA;
+  --pink: #EC4899;
+  --background: #F9FAFB;        /* Light Gray */
+  --card-bg: #FFFFFF;           /* Pure White */
+  --text: #111827;              /* Dark Gray */
+  --text-muted: #6B7280;        /* Medium Gray */
+  --border: #E5E7EB;            /* Light Border */
+  --shadow-primary: rgba(99, 102, 241, 0.25);
+  --gradient: linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+  --gradient-2: linear-gradient(135deg, #22C55E 0%, #6366F1 100%);
+  --gradient-3: linear-gradient(135deg, #6366F1 0%, #22C55E 100%);
+  --gradient-4: linear-gradient(135deg, #9333EA 0%, #EC4899 100%);
 }
 
 * {
@@ -31,7 +33,7 @@
 html, body {
   width: 100%;
   min-height: 100vh;
-  background: var(--dark);
+  background: var(--background);
   overflow-x: hidden;
 }
 
@@ -50,9 +52,9 @@ body::before {
   width: 100vw;
   height: 100vh;
   background: 
-    radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
   z-index: -1;
   animation: backgroundPulse 8s ease-in-out infinite;
 }
@@ -112,8 +114,8 @@ body::before {
   align-items: center;
   justify-content: center;
   padding: 16px 32px;
-  background: var(--gradient-3);
-  color: white;
+  background: var(--primary);
+  color: #FFFFFF;
   text-decoration: none;
   border-radius: 50px;
   border: none;
@@ -123,7 +125,7 @@ body::before {
   position: relative;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
-  box-shadow: 0 8px 32px rgba(79, 172, 254, 0.3);
+  box-shadow: 0px 8px 20px rgba(99,102,241,0.35);
   white-space: nowrap;
   min-width: 160px;
 }
@@ -144,21 +146,22 @@ body::before {
 }
 
 .btn:hover {
+  background: #4F46E5;
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 16px 48px rgba(79, 172, 254, 0.4);
+  box-shadow: 0px 12px 28px rgba(99,102,241,0.45);
 }
 
 .btn-outline {
   background: transparent;
   border: 2px solid var(--primary);
   color: var(--primary);
-  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+  box-shadow: none;
 }
 
 .btn-outline:hover {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+  background: #EEF2FF;
+  color: var(--primary);
+  box-shadow: 0px 8px 20px rgba(99,102,241,0.25);
 }
 
 /* Perfect Section Spacing */
@@ -176,17 +179,18 @@ body::before {
 
 /* Enhanced Cards with Perfect Alignment */
 .card {
-  background: rgba(26, 26, 26, 0.9);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   padding: 48px;
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
 }
 
 .card::before {
@@ -225,8 +229,8 @@ body::before {
 
 .card:hover {
   transform: translateY(-12px) scale(1.02);
-  border-color: transparent;
-  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4);
+  border-color: var(--primary);
+  box-shadow: 0px 12px 28px rgba(99,102,241,0.3);
 }
 
 /* Floating Elements */

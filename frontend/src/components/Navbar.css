@@ -12,10 +12,10 @@
 
 .navbar.scrolled {
   padding: 15px 0;
-  background: rgba(10, 10, 10, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(30px);
-  border-bottom: 1px solid rgba(79, 172, 254, 0.2);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.1);
 }
 
 .navbar .container {

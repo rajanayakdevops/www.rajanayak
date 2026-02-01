@@ -2,9 +2,29 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+console.log('API_URL:', API_URL); // Debug log
+
 const api = axios.create({
   baseURL: API_URL,
 });
+
+// Add request interceptor for debugging
+api.interceptors.request.use(request => {
+  console.log('Contact API Request:', request.method?.toUpperCase(), request.url, request.data);
+  return request;
+});
+
+// Add response interceptor for debugging
+api.interceptors.response.use(
+  response => {
+    console.log('Contact API Success:', response.status, response.data);
+    return response;
+  },
+  error => {
+    console.error('Contact API Error:', error.response?.status, error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 export const contactAPI = {
   sendMessage: (data) => api.post('/contact', data),

@@ -13,6 +13,8 @@ const Contact = () => {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
   const [testimonials, setTestimonials] = useState([]);
 
@@ -47,14 +49,35 @@ const Contact = () => {
     e.preventDefault();
     setSubmitting(true);
     setStatus('');
+    setShowSuccessDialog(false);
+    setShowErrorDialog(false);
 
     try {
-      await contactAPI.sendMessage(formData);
+      console.log('Submitting form data:', formData);
+      const response = await contactAPI.sendMessage(formData);
+      console.log('Form submission successful:', response);
+      
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
+      setShowSuccessDialog(true);
+      
+      // Auto-hide success dialog after 4 seconds
+      setTimeout(() => {
+        setShowSuccessDialog(false);
+      }, 4000);
+      
     } catch (error) {
+      console.error('Form submission error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error message:', error.message);
+      
       setStatus('error');
-      console.error('Error sending message:', error);
+      setShowErrorDialog(true);
+      
+      // Auto-hide error dialog after 4 seconds
+      setTimeout(() => {
+        setShowErrorDialog(false);
+      }, 4000);
     } finally {
       setSubmitting(false);
     }
@@ -233,28 +256,42 @@ const Contact = () => {
                 </>
               )}
             </button>
-            
-            {status === 'success' && (
-              <div className="status-message success">
-                <span>🎉</span>
-                <div>
-                  <strong>Message sent successfully!</strong>
-                  <p>Thank you for reaching out. I'll get back to you within 24 hours.</p>
-                </div>
-              </div>
-            )}
-            
-            {status === 'error' && (
-              <div className="status-message error">
-                <span>❌</span>
-                <div>
-                  <strong>Failed to send message</strong>
-                  <p>Please try again or contact me directly at btsmemberkim@gmail.com</p>
-                </div>
-              </div>
-            )}
           </form>
         </div>
+
+        {/* Success Dialog */}
+        {showSuccessDialog && (
+          <div className="dialog-overlay">
+            <div className="dialog-box success-dialog">
+              <div className="dialog-icon">✅</div>
+              <h3>Message Sent Successfully!</h3>
+              <p>Thank you for reaching out. I'll get back to you within 24 hours.</p>
+              <button 
+                className="dialog-close" 
+                onClick={() => setShowSuccessDialog(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Error Dialog */}
+        {showErrorDialog && (
+          <div className="dialog-overlay">
+            <div className="dialog-box error-dialog">
+              <div className="dialog-icon">❌</div>
+              <h3>Failed to Send Message</h3>
+              <p>Please try again or contact me directly at btsmemberkim@gmail.com</p>
+              <button 
+                className="dialog-close" 
+                onClick={() => setShowErrorDialog(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Testimonials Section */}
         {testimonials.length > 0 && (

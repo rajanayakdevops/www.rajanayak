@@ -54,6 +54,14 @@ const Navbar = () => {
           </li>
           <li>
             <Link 
+              to="/explore" 
+              className={isActive('/explore') ? 'active' : ''}
+            >
+              Explore
+            </Link>
+          </li>
+          <li>
+            <Link 
               to="/contact" 
               className={isActive('/contact') ? 'active' : ''}
             >

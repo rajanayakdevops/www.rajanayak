@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { projectAPI } from '../services/api';
+import projectAPI from '../services/projectAPI';
 import SkeletonLoader from '../components/SkeletonLoader';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import './Projects.css';
 
 const Projects = () => {
@@ -8,82 +9,87 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const [fadeIn, setFadeIn] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
+  const { isAuthenticated } = useAuth();
+
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    technologies: '',
+    githubUrl: '',
+    liveUrl: '',
+    imageUrl: ''
+  });
 
   const filters = ['All', 'React', 'Node.js', 'Full Stack', 'Frontend'];
 
-  const sampleProjects = [
-    {
-      _id: '1',
-      title: 'E-Commerce MERN Platform',
-      description: 'Full-stack e-commerce application with advanced features including user authentication, payment gateway integration, real-time inventory management, and comprehensive admin dashboard. Built with modern technologies for optimal performance.',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'Stripe', 'JWT'],
-      githubUrl: 'https://github.com/rajanayak/ecommerce-app',
-      liveUrl: 'https://ecommerce-demo.netlify.app'
-    },
-    {
-      _id: '2',
-      title: 'Real-Time Task Management',
-      description: 'Collaborative project management platform featuring real-time updates, drag-and-drop task organization, team collaboration tools, file sharing, and progress tracking with intuitive dashboard analytics.',
-      technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Redux'],
-      githubUrl: 'https://github.com/rajanayak/task-manager',
-      liveUrl: 'https://task-manager-demo.netlify.app'
-    },
-    {
-      _id: '3',
-      title: 'Smart Weather Analytics',
-      description: 'Advanced weather application with location-based forecasts, interactive weather maps, historical data analysis, severe weather alerts, and detailed meteorological insights using multiple weather APIs.',
-      technologies: ['React', 'API Integration', 'Chart.js', 'Geolocation', 'PWA'],
-      githubUrl: 'https://github.com/rajanayak/weather-app',
-      liveUrl: 'https://weather-dashboard-demo.netlify.app'
-    },
-    {
-      _id: '4',
-      title: 'Dynamic Portfolio CMS',
-      description: 'Personal portfolio website with content management system, featuring dynamic project showcase, blog functionality, contact management, visitor analytics, and responsive design optimized for all devices.',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'CMS'],
-      githubUrl: 'https://github.com/rajanayak/portfolio',
-      liveUrl: 'https://rajanayak-portfolio.netlify.app'
-    },
-    {
-      _id: '5',
-      title: 'Social Media Dashboard',
-      description: 'Comprehensive social media management platform with post scheduling, analytics tracking, multi-platform integration, engagement metrics, and automated content optimization for better reach.',
-      technologies: ['React', 'Node.js', 'API Integration', 'Analytics', 'Automation'],
-      githubUrl: 'https://github.com/rajanayak/social-dashboard',
-      liveUrl: 'https://social-dashboard-demo.netlify.app'
-    },
-    {
-      _id: '6',
-      title: 'Learning Management System',
-      description: 'Educational platform with course management, video streaming, progress tracking, quiz system, certificate generation, and interactive learning modules designed for modern online education.',
-      technologies: ['React', 'Node.js', 'Video Streaming', 'MongoDB', 'PDF Generation'],
-      githubUrl: 'https://github.com/rajanayak/lms-platform',
-      liveUrl: 'https://lms-demo.netlify.app'
-    }
-  ];
-
   useEffect(() => {
-    fetchProjects();
+    loadProjects();
   }, []);
 
-  const fetchProjects = async () => {
+  const loadProjects = async () => {
     try {
-      // Show skeleton for 1 second minimum
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const response = await projectAPI.getProjects();
-      if (response.data.length > 0) {
-        setProjects(response.data);
-      } else {
-        setProjects(sampleProjects);
-      }
+      setLoading(true);
+      const response = await projectAPI.getAll();
+      setProjects(response.data);
     } catch (error) {
-      console.error('Error fetching projects:', error);
-      setProjects(sampleProjects);
+      console.error('Failed to load projects:', error);
+      setError('Failed to load projects');
     } finally {
       setLoading(false);
-      // Trigger fade-in animation
       setTimeout(() => setFadeIn(true), 100);
+    }
+  };
+
+  const openAddForm = () => {
+    setShowAddForm(true);
+  };
+
+  const closeAddForm = () => {
+    setShowAddForm(false);
+    setFormData({
+      title: '',
+      description: '',
+      technologies: '',
+      githubUrl: '',
+      liveUrl: '',
+      imageUrl: ''
+    });
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    
+    try {
+      const projectData = {
+        ...formData,
+        technologies: formData.technologies.split(',').map(tech => tech.trim())
+      };
+      
+      await projectAPI.create(projectData);
+      setSuccessMessage('Project added successfully!');
+      await loadProjects();
+      closeAddForm();
+      
+      setTimeout(() => setSuccessMessage(''), 3000);
+      
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      setError('Failed to add project. Please try again.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -101,23 +107,45 @@ const Projects = () => {
     <div className={`projects-page ${fadeIn ? 'fade-in-active' : ''}`}>
       <div className="container">
         <div className="projects-header fade-item" style={{animationDelay: '0.1s'}}>
-          <h1>Featured Projects</h1>
-          <p className="subtitle">
-            Discover my latest work showcasing innovative solutions and cutting-edge technologies. 
-            Each project represents a unique challenge solved with creativity and technical expertise.
-          </p>
-          
-          <div className="project-filters">
-            {filters.map(filterName => (
-              <button
-                key={filterName}
-                className={`filter-btn ${filter === filterName ? 'active' : ''}`}
-                onClick={() => setFilter(filterName)}
-              >
-                {filterName}
-              </button>
-            ))}
+          <div className="header-content">
+            <h1>Featured Projects</h1>
+            <p className="subtitle">
+              Discover my latest work showcasing innovative solutions and cutting-edge technologies. 
+              Each project represents a unique challenge solved with creativity and technical expertise.
+            </p>
           </div>
+          {isAuthenticated && (
+            <button className="add-btn" onClick={openAddForm}>
+              <span className="plus-icon">+</span>
+              Add Project
+            </button>
+          )}
+        </div>
+        
+        {successMessage && (
+          <div className="success-message">
+            {successMessage}
+            <button onClick={() => setSuccessMessage('')}>×</button>
+          </div>
+        )}
+        
+        {error && (
+          <div className="error-message">
+            {error}
+            <button onClick={() => setError('')}>×</button>
+          </div>
+        )}
+        
+        <div className="project-filters">
+          {filters.map(filterName => (
+            <button
+              key={filterName}
+              className={`filter-btn ${filter === filterName ? 'active' : ''}`}
+              onClick={() => setFilter(filterName)}
+            >
+              {filterName}
+            </button>
+          ))}
         </div>
         
         <div className="projects-grid">
@@ -132,7 +160,11 @@ const Projects = () => {
                 Live
               </div>
               <div className="project-image">
-                <div className="project-icon">🚀</div>
+                {project.imageUrl ? (
+                  <img src={project.imageUrl} alt={project.title} />
+                ) : (
+                  <div className="project-icon">🚀</div>
+                )}
                 <div className="project-overlay">
                   <div className="overlay-content">
                     <h4>View Project</h4>
@@ -164,7 +196,113 @@ const Projects = () => {
             </div>
           ))}
         </div>
+
+        {projects.length === 0 && !loading && (
+          <div className="empty-state">
+            <h3>No projects yet</h3>
+            <p>Click "Add Project" to create your first project card</p>
+          </div>
+        )}
       </div>
+
+      {/* Add Project Form Modal */}
+      {showAddForm && (
+        <div className="modal-overlay" onClick={closeAddForm}>
+          <div className="modal-content form-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeAddForm}>×</button>
+            <div className="form-header">
+              <h2>Add New Project</h2>
+              <p>Fill in the details of your new project</p>
+            </div>
+            <form onSubmit={handleSubmit} className="project-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="e.g., E-Commerce Platform"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Image URL</label>
+                  <input
+                    type="url"
+                    name="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={handleInputChange}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
+                  rows="4"
+                  placeholder="Detailed description of your project"
+                ></textarea>
+              </div>
+              <div className="form-group">
+                <label>Technologies (comma-separated)</label>
+                <input
+                  type="text"
+                  name="technologies"
+                  value={formData.technologies}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="React, Node.js, MongoDB, Express"
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>GitHub URL</label>
+                  <input
+                    type="url"
+                    name="githubUrl"
+                    value={formData.githubUrl}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="https://github.com/username/repo"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Live URL</label>
+                  <input
+                    type="url"
+                    name="liveUrl"
+                    value={formData.liveUrl}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="https://project-demo.netlify.app"
+                  />
+                </div>
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn-cancel" onClick={closeAddForm} disabled={saving}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn-save" disabled={saving}>
+                  {saving ? (
+                    <>
+                      <span className="saving-spinner"></span>
+                      Saving...
+                    </>
+                  ) : (
+                    'Add Project'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

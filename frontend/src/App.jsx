@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext.jsx';
 import Navbar from './components/Navbar';
+import AdminLoginPopup from './components/AdminLoginPopup';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Explore from './pages/Explore';
@@ -8,6 +10,20 @@ import Contact from './pages/Contact';
 import './App.css';
 
 function App() {
+  const [showAdminPopup, setShowAdminPopup] = useState(false);
+  const [loginSuccessCallback, setLoginSuccessCallback] = useState(null);
+
+  const handleLoginClick = (onSuccess) => {
+    setLoginSuccessCallback(() => onSuccess);
+    setShowAdminPopup(true);
+  };
+
+  const handleLoginSuccess = (userData) => {
+    if (loginSuccessCallback) {
+      loginSuccessCallback(userData);
+    }
+  };
+
   useEffect(() => {
     // Improved scroll reveal animation
     const observerOptions = {
@@ -51,20 +67,25 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter basename='/'>
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename='/'>
+        <div className="App">
+          <Navbar onLoginClick={handleLoginClick} />
+          <AdminLoginPopup 
+            isOpen={showAdminPopup} 
+            onClose={() => setShowAdminPopup(false)}
+            onLoginSuccess={handleLoginSuccess}
+          />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
-
-// making some mino changes right 
 
 export default App;

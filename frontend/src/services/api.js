@@ -52,4 +52,21 @@ export const testimonialAPI = {
   createTestimonial: (data) => api.post('/testimonials', data)
 };
 
+export const authAPI = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  verifyToken: () => {
+    const token = localStorage.getItem('adminToken');
+    return api.get('/auth/verify', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+};
+
+export const authUtils = {
+  setToken: (token) => localStorage.setItem('adminToken', token),
+  getToken: () => localStorage.getItem('adminToken'),
+  removeToken: () => localStorage.removeItem('adminToken'),
+  isLoggedIn: () => !!localStorage.getItem('adminToken')
+};
+
 export default api;

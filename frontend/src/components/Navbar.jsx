@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ onLoginClick }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -22,12 +25,29 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   }, [location]);
 
+  const handleLoginSuccess = (userData) => {
+    // Context will handle the state update
+  };
+
+  const handleLogout = () => {
+    logout();
+    setShowDropdown(false);
+  };
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
   const isActive = (path) => {
     return location.pathname === path;
+  };
+
+  const getUserInitials = (email) => {
+    return 'RN'; // Raja Nayak initials
+  };
+
+  const getUserName = () => {
+    return 'Raja Nayak';
   };
 
   return (
@@ -67,6 +87,32 @@ const Navbar = () => {
             >
               Contact
             </Link>
+          </li>
+          <li>
+            {user ? (
+              <div className="user-profile" onClick={() => setShowDropdown(!showDropdown)}>
+                <div className="user-avatar">
+                  {getUserInitials(user.email)}
+                </div>
+                <div className="user-info">
+                  <p className="user-name">{getUserName()}</p>
+                  <p className="user-role">{user.role}</p>
+                </div>
+                {showDropdown && (
+                  <div className="dropdown-menu">
+                    <button className="dropdown-item">Dashboard</button>
+                    <button className="dropdown-item">Settings</button>
+                    <button className="dropdown-item logout" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => onLoginClick(handleLoginSuccess)} className="admin-login-btn">
+                Admin
+              </button>
+            )}
           </li>
         </ul>
         

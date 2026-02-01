@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import achievementAPI from '../services/achievementAPI';
+import { useAuth } from '../contexts/AuthContext.jsx';
 import './Explore.css';
 
 const Explore = () => {
@@ -10,6 +11,7 @@ const Explore = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const { isAuthenticated } = useAuth();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -123,10 +125,12 @@ const Explore = () => {
             <h1>🏆 Achievements & Awards</h1>
             <p>Showcasing my hackathon wins and competition achievements</p>
           </div>
-          <button className="add-btn" onClick={openAddForm}>
-            <span className="plus-icon">+</span>
-            Add Achievement
-          </button>
+          {isAuthenticated && (
+            <button className="add-btn" onClick={openAddForm}>
+              <span className="plus-icon">+</span>
+              Add Achievement
+            </button>
+          )}
         </div>
         
         {successMessage && (

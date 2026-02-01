@@ -8,6 +8,7 @@ const projectRoutes = require('./routes/projectRoutes');
 const visitorRoutes = require('./routes/visitorRoutes');
 const codingStatsRoutes = require('./routes/codingStatsRoutes');
 const testimonialRoutes = require('./routes/testimonialRoutes');
+const authRoutes = require('./routes/authRoutes');
 const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/visitors', visitorRoutes);
 app.use('/api/coding-stats', codingStatsRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/achievements', achievementRoutes);
 
 app.get('/', (req, res) => {

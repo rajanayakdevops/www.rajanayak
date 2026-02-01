@@ -3,7 +3,7 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  padding: 20px 0;
+  padding: 12px 0;
   background: rgba(10, 10, 10, 0.1);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -11,7 +11,7 @@
 }
 
 .navbar.scrolled {
-  padding: 15px 0;
+  padding: 8px 0;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(30px);
   border-bottom: 1px solid rgba(99, 102, 241, 0.2);
@@ -22,6 +22,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .logo {
@@ -32,31 +35,20 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
-  position: relative;
   transition: all 0.3s ease;
   z-index: 2;
-}
-
-.logo::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gradient-3);
-  transition: width 0.3s ease;
-}
-
-.logo:hover::after {
-  width: 100%;
+  flex-shrink: 0;
 }
 
 .nav-links {
   display: flex;
   list-style: none;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-end;
+  flex: 1;
 }
 
 .nav-links li {
@@ -69,12 +61,13 @@
   text-decoration: none;
   font-weight: 500;
   font-size: 15px;
-  padding: 12px 24px;
+  padding: 10px 20px;
   border-radius: 50px;
   position: relative;
   transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
   overflow: hidden;
   z-index: 1;
+  white-space: nowrap;
 }
 
 .nav-links a::before {
@@ -202,4 +195,63 @@
     width: 180px;
     font-size: 16px;
   }
+}
+.admin-login-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+  white-space: nowrap;
+}
+
+.admin-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  background: var(--gradient-3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-3);
+  transition: width 0.3s ease;
+}
+
+.logo:hover::after {
+  width: 100%;
+}
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-3);
+  transition: width 0.3s ease;
+}
+
+.logo:hover::after {
+  width: 100%;
 }
